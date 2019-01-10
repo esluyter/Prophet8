@@ -1,4 +1,4 @@
-# prophet-8
+# Prophet8
 SuperCollider interface to the Prophet '08
 
 Work in progress!
