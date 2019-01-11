@@ -1,0 +1,39 @@
+TITLE:: Prophet8
+summary:: an interface to Dave Smith's Prophet '08
+categories:: Live Show Control
+related:: Classes/PVoice
+
+DESCRIPTION::
+A work-in-progress interface to the Prophet '08.
+
+CLASSMETHODS::
+
+METHOD:: new
+If deviceName and portName are nil, will not attempt to connect to device. You can always connect to a device later with makeDevice method.
+
+INSTANCEMETHODS::
+
+PRIVATE:: init, prSendParam
+
+METHOD:: makeDevice
+Connects to the MIDI device via MIDIIn and MIDIOut. Optionally calls makeDef and loadVoice.
+
+METHOD:: makeDef
+Creates MIDI listener as MIDIdef with given key.
+
+METHOD:: loadVoice
+Loads voice settings from Prophet.
+
+METHOD:: inDevice
+METHOD:: outDevice
+Input and output MIDI devices.
+
+METHOD:: channel
+MIDI channel to listen and transmit on.
+
+METHOD:: voice
+Access to the voice settings of the Prophet.
+
+METHOD:: layerA
+METHOD:: layerB
+Convenience access to voice.layerA and voice.layerB.

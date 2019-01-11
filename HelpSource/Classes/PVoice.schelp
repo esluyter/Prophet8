@@ -1,0 +1,109 @@
+TITLE:: PVoice
+summary:: an interface to Dave Smith's Prophet '08
+categories:: Live Show Control
+related:: Classes/Prophet8
+
+DESCRIPTION::
+This class gives access to every parameter of a voice in the Prophet '08 via a nested tree of objects, corresponding to the following parameters:
+
+DEFINITIONLIST::
+## layerA, layerB (LINK::Classes/PLayer::) ||
+DEFINITIONLIST::
+## oscs (LINK::Classes/POscillator:: x 2) ||
+DEFINITIONLIST::
+## freq || 0-120, in semitones (10 octaves)
+## fine || 0-100, -50 - 50 cents
+## shape || 0 off, 1 saw, 2 tri, 3 saw/tri mix, 4-103 pwm
+## glide || 0-127
+## keyboardOn || 0 off, 1 on
+::
+## sync || 0 off, 1 on
+## glideMode || 0 fixed rate, 1 fixed rate auto, 2 fixed time, 3 fixed time auto
+## slop || 0-5
+## oscMix || 0-127
+## noiseAmt || 0-127
+## filter (LINK::Classes/PFilter::) ||
+DEFINITIONLIST::
+## freq || 0-164, semitones
+## res || 0-127
+## keyboardAmt || 0-127
+## mod || 0-127
+## poles || 0 two, 1 four
+## env (LINK::Classes/PEnvelope::) ||
+DEFINITIONLIST::
+## amt || 0-254, -127 to 127
+## velAmt || 0-127
+## delay || 0-127
+## attack || 0-127
+## decay || 0-127
+## sustain || 0-127
+## release || 0-127
+::
+::
+## vca (LINK::Classes/PVCA::) ||
+DEFINITIONLIST::
+## initLevel || 0-127
+## spread || 0-127
+## volume || 0-127
+## env (LINK::Classes/PEnvelope::) || note this envelope only has amount from 0 to 127
+DEFINITIONLIST::
+## amt || 0-127
+## velAmt || 0-127
+## delay || 0-127
+## attack || 0-127
+## decay || 0-127
+## sustain || 0-127
+## release || 0-127
+::
+::
+## lfos (LINK::Classes/PLFO:: x 4) ||
+DEFINITIONLIST::
+## freq || 0-166; 0-150 unsynced freq, 151-166 see manual
+## shape || 0 tri, 1 rev saw, 2 saw, 3 square, 4 random
+## amt || 0-127
+## dest || 0-43, see modulation destinations list
+## keySync || 0 off, 1 on
+::
+## env3Dest || 0-43, see modulation destinations list
+## env3 (LINK::Classes/PEnvelope::) ||
+DEFINITIONLIST::
+## amt || 0-254, -127 to 127
+## velAmt || 0-127
+## delay || 0-127
+## attack || 0-127
+## decay || 0-127
+## sustain || 0-127
+## release || 0-127
+::
+## mods (LINK::Classes/PMod:: x 4) ||
+DEFINITIONLIST::
+## source || 0-20, see modulation source list
+## amt || 0-254, -127 to 127
+## dest || 0-43, see modulation destinations list
+::
+## seq1Dest, seq2Dest, seq3Dest, seq4Dest || 0-43, see modulation destinations list
+## modCtrl, pressureCtrl, breathCtrl, velCtrl, footCtrl (LINK::Classes/PCtrl::) ||
+DEFINITIONLIST::
+## amt || 0-254, -127 to 127
+## dest || 0-43, see modulation destinations list
+::
+## bpm || 30-250
+## clockDivide || 0-12, see manual
+## bendRange || 0-12, semitones (I assume)
+## seqTrig || 0 normal, 1 normal no reset, 2 no gate, 3 no gate no reset, 4 key step
+## keyPriorityMode || 0 low, 1 low retrig, 2 high, 3 high retrig, 4 last, 5 last retrig
+## unisonMode || 0 one voice, 1 all voices, 2 all detune1, 3 all detune2, 4 all detune3
+## arpMode || 0 up, 1 down, 2 up/down, 3 assign
+## env3RepearOn || 0 off, 1 on
+## unisonOn || 0 off, 1 on
+## arpOn || 0 off, 1 on
+## gatedSeqOn || 0 off, 1 on
+## seqs (LINK::Classes/PSequence:: x 4) ||
+DEFINITIONLIST::
+## steps (array size 16) || 0-125 normal sequence step value, 126 reset
+::
+::
+## splitPoint || 0-127, 60=C3
+## keyboardMode || 0 normal, 1 stack, 2 split
+## name || 16 digits
+::

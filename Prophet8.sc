@@ -1,5 +1,5 @@
 Prophet8 {
-  var <inDevice, <outDevice, <>channel, <voice;
+  var <inDevice, <outDevice, <channel, <voice, defKey;
 
   *new { |deviceName, portName, channel = 0, makeDef = true, loadVoice = true|
     ^super.new.init(deviceName, portName, channel, makeDef, loadVoice);
@@ -8,6 +8,7 @@ Prophet8 {
   init { |deviceName, portName, argChannel, makeDef, loadVoice|
     channel = argChannel;
     voice = PVoice();
+    voice.addDependant(this);
     if (deviceName.notNil) {
       this.makeDevice(deviceName, portName, makeDef, loadVoice);
     };
@@ -21,7 +22,8 @@ Prophet8 {
     if (loadVoice) { this.loadVoice };
   }
 
-  makeDef {
+  makeDef { |key = 'prophet'|
+    defKey = key;
     // TODO
   }
 
@@ -29,18 +31,27 @@ Prophet8 {
     // TODO
   }
 
+  channel_ { |value|
+    channel = value;
+    this.makeDef(defKey);
+  }
+
 
   prSendParam { |num, val|
-    var numMSB = (num / 256).floor;
-    var numLSB = num % 256;
-    var valMSB = (val / 256).floor;
-    var valLSB = val % 256;
+    var numMSB = (num / 128).floor;
+    var numLSB = num % 128;
+    var valMSB = (val / 128).floor;
+    var valLSB = val % 128;
     if (outDevice.notNil) {
       outDevice.control(channel, 0x63, numMSB);
       outDevice.control(channel, 0x62, numLSB);
       outDevice.control(channel, 0x06, valMSB);
       outDevice.control(channel, 0x26, valLSB);
     };
+  }
+
+  update { |o, num, val|
+    this.prSendParam(num, val);
   }
 
   layerA { ^voice.layerA }
@@ -58,7 +69,9 @@ PVoice {
 
   init {
     layerA = PLayer();
+    layerA.addDependant({ |o, num, val| this.changed(num, val); });
     layerB = PLayer();
+    layerB.addDependant({ |o, num, val| this.changed(num + 200, val); });
     splitPoint = 60; // 0-127, 60=C3
     keyboardMode = 0; // 0 normal, 1 stack, 2 split
     name = String.newFrom($ .dup(16));
@@ -82,7 +95,11 @@ PLayer {
   }
 
   init {
-    oscs = 2.collect { POscillator() };
+    oscs = 2.collect { |i|
+      var osc = POscillator();
+      osc.addDependant({ |o, num, val| this.changed(num + (i * 5), val); });
+      osc;
+    };
     sync = 0; // 0 off, 1 on
     glideMode = 0; // 0 fixed rate, 1 fixed rate auto, 2 fixed time, 3 fixed time auto
     slop = 0; // 0-5
@@ -152,6 +169,31 @@ POscillator {
     shape = 1; // 0 off, 1 saw, 2 tri, 3 saw/tri mix, 4-103 pwm
     glide = 0; // 0-127
     keyboardOn = 1; // 0 off, 1 on
+  }
+
+  freq_ { |value|
+    freq = value;
+    this.changed(0, value);
+  }
+
+  fine_ { |value|
+    fine = value;
+    this.changed(1, value);
+  }
+
+  shape_ { |value|
+    shape = value;
+    this.changed(2, value);
+  }
+
+  glide_ { |value|
+    glide = value;
+    this.changed(3, value);
+  }
+
+  keyboardOn_ { |value|
+    keyboardOn = value;
+    this.changed(4, keyboardOn);
   }
 }
 
