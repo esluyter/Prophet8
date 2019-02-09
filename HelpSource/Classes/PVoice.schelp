@@ -58,7 +58,25 @@ DEFINITIONLIST::
 ::
 ## lfos (LINK::Classes/PLFO:: x 4) ||
 DEFINITIONLIST::
-## freq || 0-166; 0-150 unsynced freq, 151-166 see manual
+## freq || TABLE::
+## 0-150 || unsynced freq
+## 151 || sequence speed divided by 32
+## 152 || seq speed div by 16
+## 153 || seq speed div by 8
+## 154 || seq speed div by 6
+## 155 || seq speed div by 4
+## 156 || seq speed div by 3
+## 157 || seq speed div by 2
+## 158 || seq speed div by 1.5
+## 159 || one cycle per step
+## 160 || two cycles per three steps
+## 161 || two cycles per step
+## 162 || one cycle per three steps
+## 163 || four cycles per step
+## 164 || six cycles per step
+## 165 || eight cycles per step
+## 166 || sixteen cycles per step
+::
 ## shape || 0 tri, 1 rev saw, 2 saw, 3 square, 4 random
 ## amt || 0-127
 ## dest || 0-43, see modulation destinations list
@@ -88,13 +106,27 @@ DEFINITIONLIST::
 ## dest || 0-43, see modulation destinations list
 ::
 ## bpm || 30-250
-## clockDivide || 0-12, see manual
-## bendRange || 0-12, semitones (I assume)
+## clockDivide || TABLE::
+## 0 || half note
+## 1 || quarter note
+## 2 || eighth note
+## 3 || eighth note half swing
+## 4 || eighth note full swing
+## 5 || eighth note triplets
+## 6 || sixteenth note
+## 7 || sixteenth note half swing
+## 8 || sixteenth note full swing
+## 9 || sixteenth note triplets
+## 10 || thirty-second notes
+## 11 || thirty-second notes triplets
+## 12 || sixty-fourth note triplets
+::
+## bendRange || 0-12, semitones
 ## seqTrig || 0 normal, 1 normal no reset, 2 no gate, 3 no gate no reset, 4 key step
 ## keyPriorityMode || 0 low, 1 low retrig, 2 high, 3 high retrig, 4 last, 5 last retrig
 ## unisonMode || 0 one voice, 1 all voices, 2 all detune1, 3 all detune2, 4 all detune3
 ## arpMode || 0 up, 1 down, 2 up/down, 3 assign
-## env3RepearOn || 0 off, 1 on
+## env3RepeatOn || 0 off, 1 on
 ## unisonOn || 0 off, 1 on
 ## arpOn || 0 off, 1 on
 ## gatedSeqOn || 0 off, 1 on
@@ -106,4 +138,76 @@ DEFINITIONLIST::
 ## splitPoint || 0-127, 60=C3
 ## keyboardMode || 0 normal, 1 stack, 2 split
 ## name || 16 digits
+::
+
+SUBSECTION:: Modulation sources
+TABLE::
+## 0 || off
+## 1 || sequence track 1
+## 2 || seq track 2
+## 3 || seq track 3
+## 4 || seq track 4
+## 5 || lfo 1
+## 6 || lfo 2
+## 7 || lfo 3
+## 8 || lfo 4
+## 9 || filter envelope
+## 10 || vca envelope
+## 11 || envelope 3
+## 12 || pitch bend
+## 13 || mod wheel
+## 14 || pressure
+## 15 || midi breath
+## 16 || midi foot
+## 17 || midi expression
+## 18 || velocity
+## 19 || note number
+## 20 || noise
+::
+SUBSECTION:: Modulation destinations
+TABLE::
+## 0 || off
+## 1 || osc 1 freq
+## 2 || osc 2 freq
+## 3 || osc 1 and 2 freq
+## 4 || osc mix
+## 5 || noise level
+## 6 || osc 1 pulse width
+## 7 || osc 2 pulse width
+## 8 || osc 1 and 2 pulse width
+## 9 || filter freq
+## 10 || resonance
+## 11 || filter audio mod amt
+## 12 || vca level
+## 13 || pan spread
+## 14 || lfo 1 freq
+## 15 || lfo 2 freq
+## 16 || lfo 3 freq
+## 17 || lfo 4 freq
+## 18 || all lfo freq
+## 19 || lfo 1 amt
+## 20 || lfo 2 amt
+## 21 || lfo 3 amt
+## 22 || lfo 4 amt
+## 23 || all lfo amt
+## 24 || filter env amt
+## 25 || amp env amt
+## 26 || env 3 amt
+## 27 || all env amounts
+## 28 || env 1 attack
+## 29 || env 2 attack
+## 30 || env 3 attack
+## 31 || all env attacks
+## 32 || env 1 decay
+## 33 || env 2 decay
+## 34 || env 3 decay
+## 35 || all env decays
+## 36 || env 1 release
+## 37 || env 2 release
+## 38 || env 3 release
+## 39 || all env releases
+## 40 || mod 1 amt
+## 41 || mod 2 amt
+## 42 || mod 3 amt
+## 43 || mod 4 amt
 ::
