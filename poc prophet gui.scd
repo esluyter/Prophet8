@@ -73,6 +73,29 @@ f = { |prophet, address, value|
       var address = match[1][1].postln;
       ~view.topPanel.perform(address.asSymbol).value_(value);
     };
+    if ((match = address.findRegexp("^seq/(\\d)/step/(.*)")).size > 0) {
+      var index = match[1][1].asInt.post;
+      var address = match[2][1].asInt.postln;
+      if (index == 0) {
+        ~view.seqView.steps[address].value_(value);
+      };
+    };
+    if ((match = address.findRegexp("^seq/(\\d)/dest")).size > 0) {
+      var index = match[1][1].asInt.postln;
+      if (index == 0) {
+        ~view.seqView.dest.value_(value);
+      };
+    };
+    if ((match = address.findRegexp("^mod/(\\d)/(.*)")).size > 0) {
+      var address = match[2][1].post;
+      var index = match[1][1].asInt.postln;
+      ~view.modViews[index].perform(address.asSymbol).value_(value);
+    };
+    if ((match = address.findRegexp("^ctrl/(\\d)/(.*)")).size > 0) {
+      var address = match[2][1].post;
+      var index = match[1][1].asInt.postln;
+      ~view.ctrlView.perform((address ++ "s").asSymbol)[index].value_(value);
+    };
   };
 };
 ~prophet.addDependant(f);
@@ -141,8 +164,23 @@ f = { |prophet, address, value|
 ~prophet.layerA.bpm = 120;
 ~prophet.layerA.clockDivide = 1;
 ~prophet.layerA.gatedSeqOn = 1;
+
+~prophet.layerA.seq1.steps = [50, 100, 90, 80, 126] ++ (0!11);
+~prophet.layerA.seq1Dest = 5;
+
+~prophet.layerA.mod1.source = 13;
+~prophet.layerA.mod1.dest = 14;
+~prophet.layerA.mod1.amt = 200;
+
+~prophet.layerA.mod2.source = 6;
+~prophet.layerA.mod2.dest = 6;
+~prophet.layerA.mod2.amt = 150;
+
+~prophet.layerA.modCtrl.dest = 9;
+~prophet.layerA.modCtrl.amt = 190;
+~prophet.layerA.footCtrl.dest = 13;
+~prophet.layerA.footCtrl.amt = 250;
 )
+
 ~prophet.layerB.filter.freq = 60
-
-
-
+Prophet8.layerParamKey.postcs

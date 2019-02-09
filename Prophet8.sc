@@ -1,6 +1,6 @@
 Prophet8 {
   var <inDevice, <outDevice, <globals, <voice, defKey;
-  classvar layerParamKey, globalParamKey;
+  classvar <layerParamKey, globalParamKey;
 
   *initClass {
     layerParamKey = [
@@ -19,16 +19,16 @@ Prophet8 {
      "lfo/3/freq", "lfo/3/shape", "lfo/3/amt", "lfo/3/dest", "lfo/3/keySync",
      "env3/dest", "env3/amt", "env3/velAmt", "env3/delay", "env3/attack",
      "env3/decay", "env3/sustain", "env3/release",
-     "mod1Source", "mod1Amt", "mod1Dest",
-     "mod2Source", "mod2Amt", "mod2Dest",
-     "mod3Source", "mod3Amt", "mod3Dest",
-     "mod4Source", "mod4Amt", "mod4Dest",
-     "seq1Dest", "seq2Dest", "seq3Dest", "seq4Dest",
-     "modAmt", "modDest", "pressureAmt", "pressureDest",
-     "breathAmt", "breathDest", "velAmt", "velDest", "footAmt", "footDest",
+     "mod/0/source", "mod/0/amt", "mod/0/dest",
+     "mod/1/source", "mod/1/amt", "mod/1/dest",
+     "mod/2/source", "mod/2/amt", "mod/2/dest",
+     "mod/3/source", "mod/3/amt", "mod/3/dest",
+     "seq/0/dest", "seq/1/dest", "seq/2/dest", "seq/3/dest",
+     "ctrl/0/amt", "ctrl/0/dest", "ctrl/1/amt", "ctrl/1/dest", "ctrl/2/amt",
+     "ctrl/2/dest", "ctrl/3/amt", "ctrl/3/dest", "ctrl/4/amt", "ctrl/4/dest",
      "top/bpm", "top/clockDivide", "top/bendRange", "top/seqTrig", "top/unisonMode", "top/unisonAssign",
      "top/arpMode", "env3/repeatOn", "osc/unisonOn", "top/arpOn", "top/gatedSeqOn"
-   ] ++ (nil!16) ++ ["splitPoint", \keyboardMode] ++ (4.collect { |n| 16.collect { |i| ("seq" ++ (n + 1) ++ "Step" ++ (i + 1)) } }).flat;
+   ] ++ (nil!16) ++ ["splitPoint", \keyboardMode] ++ (4.collect { |n| 16.collect { |i| ("seq/" ++ n.asString ++ "/step/" ++ i.asString).asSymbol } }).flat.collect(_.asString);
    globalParamKey = [
      "program", "bank", "transpose", "fineTune", "channel", "polyChain", "midiClock",
      "localControl", "paramSend", "paramReceive", "programSendReceive", "pressureSendReceive",
@@ -320,7 +320,7 @@ PLayer {
   var <env3RepeatOn, <unisonOn, <arpOn, <gatedSeqOn;
   // unused 102-117
   // 118 and 119, split and keyboard mode in PVoice
-  var seqs;
+  var <seqs;
   // 184-199, name in PVoice
 
   *new {
@@ -383,7 +383,10 @@ PLayer {
     arpOn = 0; // 0 off, 1 on
     gatedSeqOn = 0; // 0 off, 1 on
 
-    seqs = 4.collect { PSequence() }; // TODO add dependant
+    seqs = 4.collect { |i|
+      var seq = PSequence();
+      seq.addDependant({ |o, num, val| this.changed(num + 120 + (i * 16), val) });
+    };
   }
 
   prSet { |num, val|
@@ -774,6 +777,23 @@ PSequence {
 
   init {
     steps = 0.dup(16); // 0-125 normal sequence step value, 126 reset
+  }
+
+  steps {
+    ^steps.copy;
+  }
+
+  steps_ { |value|
+    var oldsteps = steps;
+    if (value.isArray.not || (value.size != 16)) {
+      ^false;
+    };
+    steps = value;
+    steps.do { |step, i|
+      if (steps[i] != oldsteps[i]) {
+        this.changed(i, steps[i]);
+      }
+    }
   }
 
   // TODO assign steps with changed flag

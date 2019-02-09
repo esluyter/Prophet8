@@ -136,7 +136,7 @@ P08LFOModule : P08Module {
 
 
 P08CtrlModule : P08Module {
-  var dests, amts;
+  var <dests, <amts;
 
   *new { |parent, bounds|
     ^super.new(parent, bounds).init2;
@@ -147,8 +147,10 @@ P08CtrlModule : P08Module {
     amts = nil!5;
     ["Mod Wheel", "Pressure", "Breath", "Velocity", "Foot Controller"].do { |str, i|
       P08Label(this, Rect(15, i * 44 + 15, 95, 15)).align_(\left).string_(str);
-      dests[i] = P08PopUpMenu(this, Rect(15, i * 44 + 31, 95, 15)).items_(modDests);
-      amts[i] = P08Knob(this, Rect(123, i * 44 + 8, 35, 35));
+      dests[i] = P08PopUpMenu(this, Rect(15, i * 44 + 31, 95, 15))
+        .items_(modDests);
+      amts[i] = P08Knob(this, Rect(123, i * 44 + 8, 35, 35))
+        .spec_(ControlSpec(0, 254, 'linear', 0.0, 0, ""));
       P08Label(this, Rect(120, i * 44 + 38, 40, 20)).string_("Amount");
     };
   }
@@ -156,7 +158,7 @@ P08CtrlModule : P08Module {
 
 
 P08ModModule : P08Module {
-  var source, dest, amt;
+  var <source, <dest, <amt;
 
   *new { |parent, bounds|
     ^super.new(parent, bounds).init2;
@@ -175,7 +177,8 @@ P08ModModule : P08Module {
       .align_(\right)
       .stringColor_(Color.hsv(0, 0, 0.5));
 
-    amt = P08Knob(this, Rect(188, 8, 35, 35));
+    amt = P08Knob(this, Rect(188, 8, 35, 35))
+      .spec_(ControlSpec(0, 254, 'linear', 0.0, 0, ""));
     P08Label(this, Rect(185, 38, 40, 20)).string_("Amount");
   }
 }
@@ -230,7 +233,7 @@ P08Env3Module : P08Module {
 
 
 P08SeqModule : P08Module {
-  var tracks, <track = 0, steps, dest;
+  var tracks, <track = 0, <steps, <dest;
 
   *new { |parent, bounds|
     ^super.new(parent, bounds).init2;

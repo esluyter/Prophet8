@@ -18,7 +18,7 @@ P08Module : SCViewHolder {
       "Filter Envelope",
       "VCA Envelope",
       "Envelope 3",
-      "Pitch Bend"
+      "Pitch Bend",
       "Mod Wheel",
       "Pressure",
       "MIDI Breath",
@@ -107,5 +107,5 @@ P08Module : SCViewHolder {
     view.refresh;
   }
 
-  
+
 }

@@ -23,8 +23,8 @@ P08Background : SCViewHolder {
 }
 
 P08View : SCViewHolder {
-  var <oscView, <filtView, <ampView, <env3View, seqView, <lfoViews, modViews,
-  ctrlView, <lcdView, <topPanel, insignia, layerPanel;
+  var <oscView, <filtView, <ampView, <env3View, <seqView, <lfoViews, <modViews,
+  <ctrlView, <lcdView, <topPanel, insignia, layerPanel;
 
   *new { |parent, bounds|
     ^super.new.init(parent, bounds);
