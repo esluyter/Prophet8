@@ -107,5 +107,11 @@ P08Module : SCViewHolder {
     view.refresh;
   }
 
-
+  lcdView_ { |value|
+    this.children.do { |child|
+      if (child.respondsTo('lcdView_')) {
+        child.lcdView_(value);
+      };
+    };
+  }
 }

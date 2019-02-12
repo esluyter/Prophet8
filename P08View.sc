@@ -39,12 +39,12 @@ P08View : SCViewHolder {
 
     topPanel = P08TopPanel(view, Rect(20, 0, 635, 180));
     4.do { |i|
-      lfoViews[i] = P08LFOModule(view, Rect((i / 2).floor * 205 + 20, (i % 2) * 85 + 60, 210, 90)).index_(i);
+      lfoViews[i] = P08LFOModule(view, Rect((i / 2).floor * 205 + 20, (i % 2) * 85 + 60, 210, 90), i);
     };
 
     ctrlView = P08CtrlModule(view, Rect(650, 0, 175, 235));
     4.do { |i|
-      modViews[i] = P08ModModule(view, Rect(820, i * 57, 240, 62));
+      modViews[i] = P08ModModule(view, Rect(820, i * 57, 240, 62), i);
     };
 
     env3View = P08Env3Module(view, Rect(20, 230, 450, 105));
@@ -55,5 +55,9 @@ P08View : SCViewHolder {
     oscView = P08OscModule(view, Rect(20, 330, 330, 200));
     filtView = P08FilterModule(view, Rect(345, 360, 390, 170));
     ampView = P08AmpModule(view, Rect(730, 360, 330, 170));
+
+    ([oscView, filtView, ampView, env3View, seqView, ctrlView, topPanel] ++ lfoViews ++ modViews).do { |child|
+      child.lcdView_(lcdView);
+    };
   }
 }

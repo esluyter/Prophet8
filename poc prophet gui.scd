@@ -1,4 +1,4 @@
-(
+( // 1
 var bounds = Rect(0, 0, 1080, 530);
 
 MIDIIn.connectAll;
@@ -12,36 +12,7 @@ if (~win.notNil) { ~win.close };
 ~view = P08View(~win, bounds.moveBy(30, 0));
 )
 
-(
-~view.oscView.freq1.action = { |view| ~view.lcdView.showMessage("Oscillator 1   48", "Frequency:    %".format(view.value.asPaddedString(3, " ")), 3) };
-~view.oscView.fine1.action = { |view| ~view.lcdView.showMessage("Oscillator 1    0", "Fine tune:    %".format((view.value - 50).asPaddedString(3, " ")), 3) };
-
-~view.oscView.shape1.action = { |view|
-  var shape;
-  if (view.value == 0) {
-    shape = "Off"
-  };
-  if (view.value == 1) {
-    shape = "Saw"
-  };
-  if (view.value == 2) {
-    shape = "Tri"
-  };
-  if (view.value == 3) {
-    shape = "Saw/Tri"
-  };
-  if (view.value >= 4) {
-    shape = "Square " ++ (view.value - 4).asString;
-  };
-  ~view.lcdView.showMessage("Oscillator 1", shape);
-};
-
-
-~view.oscView.glide1.action = { |view| ~view.lcdView.showMessage("Oscillator 1   20", "Glide:        %".format((view.value).asPaddedString(3, " ")), 3) };
-~view.oscView.mix.action = { |view| ~view.lcdView.showMessage("Oscillator     64", "Mix:          %".format((view.value).asPaddedString(3, " ")), 3) };
-)
-
-(
+( // 2
 ~prophet.removeDependant(f);
 f = { |prophet, address, value|
   var match;
@@ -102,15 +73,15 @@ f = { |prophet, address, value|
 )
 
 
-(
+( // 3
 ~prophet.layerA.osc1.freq = 48;
-~prophet.layerA.osc1.fine = 50;
+~prophet.layerA.osc1.fine = 52;
 ~prophet.layerA.osc1.shape = 2;
 ~prophet.layerA.osc1.glide = 20;
 ~prophet.layerA.osc1.keyboardOn = 1;
 ~prophet.layerA.osc2.freq = 36;
-~prophet.layerA.osc2.fine = 50;
-~prophet.layerA.osc2.shape = 0;
+~prophet.layerA.osc2.fine = 48;
+~prophet.layerA.osc2.shape = 1;
 ~prophet.layerA.osc2.glide = 25;
 ~prophet.layerA.osc2.keyboardOn = 1;
 ~prophet.layerA.noiseAmt = 20;
@@ -182,5 +153,4 @@ f = { |prophet, address, value|
 ~prophet.layerA.footCtrl.amt = 250;
 )
 
-~prophet.layerB.filter.freq = 60
-Prophet8.layerParamKey.postcs
+String.newFrom($ .dup(20)).postcs

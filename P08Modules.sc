@@ -104,36 +104,34 @@ P08TopPanel : P08Module {
 P08LFOModule : P08Module {
   var <index, <freq, <amt, <shape, <keySync, <dest;
 
-  *new { |parent, bounds|
-    ^super.new(parent, bounds).init2;
+  *new { |parent, bounds, index = 0|
+    ^super.new(parent, bounds).init2(index);
   }
 
-  init2 {
-    this.index_(0);
-
+  init2 { |index|
     P08Label(this, Rect(45, 10, 60, 20)).string_("Dest")
       .stringColor_(Color.hsv(0, 0, 0.5));
     dest = P08PopUpMenu(this, Rect(90, 12, 95, 15)).items_(modDests);
 
-    freq = P08Knob(this, Rect(20, 30, 35, 35))
-      .spec_(ControlSpec(0, 166, 'linear', 0.0, 0, ""));
+    freq = P08Knob(this, Rect(20, 30, 35, 35), "LFO", "Frequency", 0, 0, 166);
     P08Label(this, Rect(8, 60, 60, 20)).string_("Frequency");
-    amt = P08Knob(this, Rect(70, 30, 35, 35));
+    amt = P08Knob(this, Rect(70, 30, 35, 35), "LFO", "Amount");
     P08Label(this, Rect(58, 60, 60, 20)).string_("Amount");
     shape = P08PopUpMenu(this, Rect(115, 40, 50, 15))
       .items_(["Tri", "Rev Saw", "Saw", "Square", "Random"]);
-    //P08Knob(this, Rect(120, 30, 35, 35));
     P08Label(this, Rect(110, 60, 60, 20)).string_("Shape");
     keySync = P08Button(this, Rect(178, 45, 15, 8));
     P08Label(this, Rect(168, 60, 35, 20)).string_("Key Sync");
+
+    this.index_(index);
   }
 
   index_ { |value|
     index = value;
     this.title_("LFO " ++ (index + 1).asString);
+    [freq, amt].do(_.section_("LFO " ++ (index + 1).asString));
   }
 }
-
 
 P08CtrlModule : P08Module {
   var <dests, <amts;
@@ -149,22 +147,22 @@ P08CtrlModule : P08Module {
       P08Label(this, Rect(15, i * 44 + 15, 95, 15)).align_(\left).string_(str);
       dests[i] = P08PopUpMenu(this, Rect(15, i * 44 + 31, 95, 15))
         .items_(modDests);
-      amts[i] = P08Knob(this, Rect(123, i * 44 + 8, 35, 35))
-        .spec_(ControlSpec(0, 254, 'linear', 0.0, 0, ""));
+      amts[i] = P08Knob(this, Rect(123, i * 44 + 8, 35, 35), str, "Amount", 127, 0, 254)
+        .displayValueFunc_({ |value| value - 127 })
+        .centered_(true);
       P08Label(this, Rect(120, i * 44 + 38, 40, 20)).string_("Amount");
     };
   }
 }
 
-
 P08ModModule : P08Module {
   var <source, <dest, <amt;
 
-  *new { |parent, bounds|
-    ^super.new(parent, bounds).init2;
+  *new { |parent, bounds, index = 0|
+    ^super.new(parent, bounds).init2(index);
   }
 
-  init2 {
+  init2 { |index|
     source = P08PopUpMenu(this, Rect(80, 12, 95, 15)).items_(modSrcs);
     P08Label(this, Rect(15, 10, 55, 20))
       .string_("Source")
@@ -177,12 +175,14 @@ P08ModModule : P08Module {
       .align_(\right)
       .stringColor_(Color.hsv(0, 0, 0.5));
 
-    amt = P08Knob(this, Rect(188, 8, 35, 35))
-      .spec_(ControlSpec(0, 254, 'linear', 0.0, 0, ""));
+    amt = P08Knob(this, Rect(188, 8, 35, 35), "Mod " ++ (index + 1).asString, "Amount", 127, 0, 254)
+      .centered_(true)
+      .displayValueFunc_({ |value| value - 127 });
     P08Label(this, Rect(185, 38, 40, 20)).string_("Amount");
+
+    //this.title_((index + 1).asString);
   }
 }
-
 
 P08Env3Module : P08Module {
   var <amt, <velAmt, <delay, <attack, <decay, <sustain, <release, <repeatOn, <dest;
@@ -207,30 +207,30 @@ P08Env3Module : P08Module {
     dest = P08PopUpMenu(this, Rect(315, 12, 95, 15))
       .items_(modDests);
 
-    amt = P08Knob(this, Rect(25, 30, 40, 40))
-      .spec_(ControlSpec(0, 254, 'linear', 0.0, 0, ""));
+    amt = P08Knob(this, Rect(25, 30, 40, 40), "Env 3", "Amount", 127, 0, 254)
+      .centered_(true)
+      .displayValueFunc_({ |value| value - 127 });
     P08Label(this, Rect(15, 70, 60, 20)).string_("Amount");
 
-    velAmt = P08Knob(this, Rect(85, 30, 40, 40));
+    velAmt = P08Knob(this, Rect(85, 30, 40, 40), "Env 3", "Velocity");
     P08Label(this, Rect(75, 70, 60, 20)).string_("Velocity");
 
-    delay = P08Knob(this, Rect(145, 30, 40, 40));
+    delay = P08Knob(this, Rect(145, 30, 40, 40), "Env 3", "Env Delay");
     P08Label(this, Rect(135, 70, 60, 20)).string_("Delay");
 
-    attack = P08Knob(this, Rect(205, 30, 40, 40));
+    attack = P08Knob(this, Rect(205, 30, 40, 40), "Env 3", "Env Attack");
     P08Label(this, Rect(195, 70, 60, 20)).string_("Attack");
 
-    decay = P08Knob(this, Rect(265, 30, 40, 40));
+    decay = P08Knob(this, Rect(265, 30, 40, 40), "Env 3", "Env Decay");
     P08Label(this, Rect(255, 70, 60, 20)).string_("Decay");
 
-    sustain = P08Knob(this, Rect(325, 30, 40, 40));
+    sustain = P08Knob(this, Rect(325, 30, 40, 40), "Env 3", "Env Sustain");
     P08Label(this, Rect(315, 70, 60, 20)).string_("Sustain");
 
-    release = P08Knob(this, Rect(385, 30, 40, 40));
+    release = P08Knob(this, Rect(385, 30, 40, 40), "Env 3", "Env Release");
     P08Label(this, Rect(375, 70, 60, 20)).string_("Release");
   }
 }
-
 
 P08SeqModule : P08Module {
   var tracks, <track = 0, <steps, <dest;
@@ -309,9 +309,51 @@ P08OscModule : P08Module {
       P08Knob(this, Rect(i * 60 + 25, 125, 40, 40));
     };
 
-    [freq1, freq2].do(_.spec_(ControlSpec(0, 120, 'linear', 0.0, 0, "")));
-    [fine1, fine2].do(_.spec_(ControlSpec(0, 100, 'linear', 0.0, 50, "")));
-    [shape1, shape2].do(_.spec_(ControlSpec(0, 103, 'linear', 0.0, 0, "")));
+    [fine1, fine2, mix].do(_.centered_(true));
+
+    [freq1, fine1, shape1, glide1].do(_.section_("Osc 1"));
+    [freq2, fine2, shape2, glide2].do(_.section_("Osc 2"));
+
+    [freq1, freq2].do({ |knob|
+      knob
+        .spec_(ControlSpec(0, 120))
+        .name_("Frequency")
+        .displayValueFunc_({ |value| value.midiname })
+    });
+    [fine1, fine2].do { |knob|
+      knob
+        .spec_(ControlSpec(0, 100))
+        .name_("Fine tune")
+        .defaultValue_(50)
+        .displayValueFunc_({ |value| value - 50 })
+    };
+    [shape1, shape2].do { |knob|
+      knob
+        .spec_(ControlSpec(0, 103))
+        .name_("Shape")
+        .displayValueFunc_({ |value|
+          var shape;
+          if (value == 0) {
+            shape = "Off"
+          };
+          if (value == 1) {
+            shape = "Sawtooth"
+          };
+          if (value == 2) {
+            shape = "Triangle"
+          };
+          if (value == 3) {
+            shape = "Saw/Tri"
+          };
+          if (value >= 4) {
+            shape = "Pulse " ++ (value - 4).asString;
+          };
+          shape;
+        })
+    };
+    [glide1, glide2].do(_.name_("Glide"));
+    mix.section_("Osc").name_("Mix").defaultValue_(64);
+    noise.section_("Noise").name_("Amount");
 
     sync = P08Button(this, Rect(45, 98, 15, 8));
     P08Label(this, Rect(35, 108, 35, 20)).string_("Sync");
@@ -344,7 +386,6 @@ P08OscModule : P08Module {
   }
 }
 
-
 P08FilterModule : P08Module {
   var <freq, <res, <envAmt, <velAmt, <keyboardAmt, <mod, <delay, <attack, <decay,
   <sustain, <release, <poles;
@@ -358,17 +399,24 @@ P08FilterModule : P08Module {
 
     # freq, res, envAmt, velAmt, keyboardAmt, mod = ["Frequency", "Resonance", "Env Amount", "Velocity", "Key Amount", "Audio Mod"].collect { |str, i|
       P08Label(this, Rect(i * 62 + 10, 70, 60, 20)).string_(str);
-      P08Knob(this, Rect(i * 60 + 25, 30, 40, 40));
+      P08Knob(this, Rect(i * 60 + 25, 30, 40, 40), "Lowpass", str);
     };
-    freq.spec_(ControlSpec(0, 164, 'linear', 0.0, 0, ""));
-    envAmt.spec_(ControlSpec(0, 254, 'linear', 0.0, 0, ""));
+    freq.spec_(ControlSpec(0, 164));
+    velAmt.name_("Env Velocity");
+    keyboardAmt.name_("Keyboard Amt");
+    envAmt
+      .name_("Envelope Amt")
+      .spec_(ControlSpec(0, 254))
+      .defaultValue_(127)
+      .displayValueFunc_({ |value| value - 127 })
+      .centered_(true);
 
     poles = P08Button(this, Rect(35, 114, 15, 8));
     P08Label(this, Rect(25, 124, 35, 20)).string_("4 Pole");
 
     # delay, attack, decay, sustain, release = ["Delay", "Attack", "Decay", "Sustain", "Release"].collect { |str, i|
       P08Label(this, Rect(i * 60 + 75, 135, 60, 20)).string_(str);
-      P08Knob(this, Rect(i * 60 + 85, 95, 40, 40));
+      P08Knob(this, Rect(i * 60 + 85, 95, 40, 40), "Lowpass", "Env " ++ str);
     };
   }
 }
@@ -385,12 +433,17 @@ P08AmpModule : P08Module {
 
     # initLevel, envAmt, velAmt, spread, volume = ["VCA Level", "Env Amount", "Velocity", "Pan Spread", "Volume"].collect { |str, i|
       P08Label(this, Rect(i * 62 + 10, 70, 60, 20)).string_(str);
-      P08Knob(this, Rect(i * 60 + 25, 30, 40, 40));
+      P08Knob(this, Rect(i * 60 + 25, 30, 40, 40), "VCA");
     };
+    initLevel.name_("Init Level");
+    envAmt.name_("Envelope Amt");
+    velAmt.name_("Env Velocity");
+    spread.name_("Pan Spread");
+    volume.name_("Voice Volume");
 
     # delay, attack, decay, sustain, release = ["Delay", "Attack", "Decay", "Sustain", "Release"].collect { |str, i|
       P08Label(this, Rect(i * 60 + 15, 135, 60, 20)).string_(str);
-      P08Knob(this, Rect(i * 60 + 25, 95, 40, 40));
+      P08Knob(this, Rect(i * 60 + 25, 95, 40, 40), "VCA", "Env " ++ str);
     };
   }
 }
@@ -419,7 +472,20 @@ P08LCDView : UserView {
     this.showDefaultMessage;
   }
 
-  showMessage { |line1, line2, dur = 5|
+  showValue { |section = "", parameter = "", defaultValue = 0, value = 0, dur = 3|
+    var line1, line2;
+    var spaces;
+    defaultValue = defaultValue.asString;
+    value = value.asString;
+    spaces = 17 - section.size;
+    line1 = "%%".format(section, defaultValue.padLeft(spaces));
+    parameter = parameter ++ ":";
+    spaces = 17 - parameter.size;
+    line2 = "%%".format(parameter, value.padLeft(spaces));
+    this.showMessage(line1, line2, dur);
+  }
+
+  showMessage { |line1, line2, dur = 3|
     lines[0].string_(line1);
     lines[1].string_(line2);
     rout.stop;

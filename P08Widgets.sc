@@ -1,17 +1,43 @@
 P08Knob : Knob {
   var <>spec;
+  var <defaultValue;
+  var <>section;
+  var <>name;
+  var <>lcdView;
+  var <>displayValueFunc;
 
-  *new { |parent, bounds|
-    ^super.new(parent, bounds).init;
+  *new { |parent, bounds, section = "Section", name = "Knob", defaultValue = 0, minValue = 0, maxValue = 127|
+    ^super.new(parent, bounds).init(section, name, defaultValue, minValue, maxValue);
   }
 
-  init {
-    spec = ControlSpec(0, 127, 'linear', 0.0, 0, "");
-    this.color_([Color.black, Color.clear, Color.clear, Color.white]);
+  init { |argSection, argName, argDefaultValue, minValue, maxValue|
+    name = argName;
+    section = argSection;
+    spec = ControlSpec(minValue, maxValue, 'linear', 0.0, 0, "");
+    displayValueFunc = { |value| value };
+    this.defaultValue_(argDefaultValue);
+    this.color_([Color.black, Color.white, Color.clear, Color.white]);
+    this.action_({
+      lcdView.showValue(
+        section, name,
+        displayValueFunc.(this.defaultValue), displayValueFunc.(this.value)
+      );
+    });
+    this.mouseDownAction_({ |view, x, y, mod, buttNum, clickCount|
+      if (buttNum == 0 && (clickCount == 2)) {
+        this.valueAction_(this.defaultValue)
+      };
+    });
+    this.mode_(\vert);
   }
 
   value_ { |val|
     super.value_(spec.unmap(val));
+  }
+  
+  defaultValue_ { |value|
+    defaultValue = value;
+    this.value_(value);
   }
 
   value {
