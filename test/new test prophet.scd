@@ -1,7 +1,4 @@
-p = Prophet08()
-
-c = P08GUIController(p)
-
+p = Prophet08("Keyboard Uno", "USB Uno MIDI Interface"); c = P08GUIController(p)
 
 p[5]
 p[5] = 0

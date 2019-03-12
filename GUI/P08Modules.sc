@@ -300,11 +300,11 @@ P08OscModule : P08Module {
   init2 {
     this.title_("OSCILLATORS");
 
-    # freq1, fine1, shape1, glide1, mix = ["Osc 1 Freq", "Fine", "Shape/PW", "Glide", "Mix"].collect { |str, i|
+    # freq1, fine1, shape1, glide1, noise = ["Osc 1 Freq", "Fine", "Shape/PW", "Glide", "Noise"].collect { |str, i|
       P08Label(this, Rect(i * 60 + 15, 70, 60, 20)).string_(str);
       P08Knob(this, Rect(i * 60 + 25, 30, 40, 40));
     };
-    # freq2, fine2, shape2, glide2, noise = ["Osc 2 Freq", "Fine", "Shape/PW", "Glide", "Noise"].collect { |str, i|
+    # freq2, fine2, shape2, glide2, mix = ["Osc 2 Freq", "Fine", "Shape/PW", "Glide", "Mix"].collect { |str, i|
       P08Label(this, Rect(i * 60 + 15, 165, 60, 20)).string_(str);
       P08Knob(this, Rect(i * 60 + 25, 125, 40, 40));
     };
@@ -318,7 +318,7 @@ P08OscModule : P08Module {
       knob
         .spec_(ControlSpec(0, 120))
         .name_("Frequency")
-        .displayValueFunc_({ |value| value.midiname })
+        .displayValueFunc_({ |value| (value + 24).midiname })
     });
     [fine1, fine2].do { |knob|
       knob

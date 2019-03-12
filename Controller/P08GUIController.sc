@@ -62,7 +62,7 @@ P08GUIController {
 
   update { |object, param|
     if (object.class == Prophet08) {
-      this.prUpdateView(param);
+      defer { this.prUpdateView(param) };
     };
   }
 

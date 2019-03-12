@@ -8,10 +8,18 @@ P08MidiController {
 
   init { |argModel, deviceName, portName, loadVoice|
     model = argModel;
+    if (MIDIClient.initialized.not) {
+      MIDIClient.init;
+      MIDIIn.connectAll;
+    };
 
-    outDevice = MIDIOut.newByName(deviceName, portName);
-    inDevice = MIDIIn.findPort(deviceName, portName);
-    outDevice.latency = 0;
+    try {
+      outDevice = MIDIOut.newByName(deviceName, portName);
+      inDevice = MIDIIn.findPort(deviceName, portName);
+      outDevice.latency = 0;
+    } {
+      ^nil;
+    };
 
     this.makeDef;
     model.addDependant(this);
@@ -25,7 +33,7 @@ P08MidiController {
     };
 
     midiFunc = MIDIFunc.cc({ |val, num, channel|
-      if ((channel == (model.globals.channel - 1)) || (model.globals.channel == 0)) {
+      if ((channel == (model.globals.channel.value - 1)) || (model.globals.channel.value == 0)) {
         if (num == 0x63) {
           nrpn[0] = val;
         };
@@ -47,7 +55,7 @@ P08MidiController {
     var paramNum, paramVal;
     paramNum = nrpn[0] * 128 + nrpn[1];
     paramVal = nrpn[2] * 128 + nrpn[3];
-    model.ids[paramNum].midiValue = paramVal; // this is potentially dangerous... find better way?
+    model.ids[paramNum].midiValue = paramVal;
   }
 
   update { |object, param|
@@ -55,7 +63,7 @@ P08MidiController {
   }
 
   prSendNRPN { |param|
-    var channel = if (model.globals.channel == 0) { 0 } { model.globals.channel - 1 };
+    var channel = if (model.globals.channel.value == 0) { 0 } { model.globals.channel.value - 1 };
     var numMSB = (param.id / 128).floor;
     var numLSB = param.id % 128;
     var valMSB = (param.midiValue / 128).floor;

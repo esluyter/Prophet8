@@ -18,10 +18,7 @@ P08Knob : Knob {
     this.defaultValue_(argDefaultValue);
     this.color_([Color.black, Color.white, Color.clear, Color.white]);
     this.action_({
-      lcdView.showValue(
-        section, name,
-        displayValueFunc.(this.defaultValue), displayValueFunc.(this.value)
-      );
+      this.displayValueOnLCD;
     });
     this.mouseDownAction_({ |view, x, y, mod, buttNum, clickCount|
       if (buttNum == 0 && (clickCount == 2)) {
@@ -31,10 +28,20 @@ P08Knob : Knob {
     this.mode_(\vert);
   }
 
+  displayValueOnLCD {
+    if (lcdView.notNil) {
+      lcdView.showValue(
+        section, name,
+        displayValueFunc.(this.defaultValue), displayValueFunc.(this.value)
+      );
+    };
+  }
+
   value_ { |val|
     super.value_(spec.unmap(val));
+    this.displayValueOnLCD;
   }
-  
+
   defaultValue_ { |value|
     defaultValue = value;
     this.value_(value);
