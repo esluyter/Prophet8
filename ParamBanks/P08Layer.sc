@@ -36,14 +36,14 @@ P08Layer : P08ParamBank {
     pressureCtrl = P08Ctrl(offset + 83);
     breathCtrl = P08Ctrl(offset + 85);
     velCtrl = P08Ctrl(offset + 87);
-    footCtrl = PCtrl(offset + 89);
+    footCtrl = P08Ctrl(offset + 89);
 
     bpm = P08Param(offset + 91, 30, 250, 120);
     clockDivide = P08Param(offset + 92, 0, 12); // see manual
     bendRange = P08Param(offset + 93, 0, 12, 2); // semitones
     seqTrig = P08Param(offset + 94, 0, 4); // 0 normal, 1 normal no reset, 2 no gate, 3 no gate no reset, 4 key step
-    keyPriorityMode = P08Param(offset + 95, 0, 5, 5); // 0 low, 1 low retrig, 2 high, 3 high retrig, 4 last, 5 last retrig
-    unisonMode = P08Param(offset + 96, 0, 4); // 0 one voice, 1 all voices, 2 all detune1, 3 all detune2, 4 all detune3
+    unisonMode = P08Param(offset + 95, 0, 4); // 0 one voice, 1 all voices, 2 all detune1, 3 all detune2, 4 all detune3
+    keyPriorityMode = P08Param(offset + 96, 0, 5, 5); // 0 low, 1 low retrig, 2 high, 3 high retrig, 4 last, 5 last retrig
     arpMode = P08Param(offset + 97, 0, 3); // 0 up, 1 down, 2 up/down, 3 assign
 
     env3RepeatOn = P08Bool(offset + 98);
