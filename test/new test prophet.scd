@@ -20,3 +20,6 @@ p.layerA.unisonMode = 0
 
 p.layerA.footCtrl.amt.value
 p.layerA.modCtrl
+
+
+c.view.oscView.noise.addDependant({ |...args| args.postcs; })

@@ -19,6 +19,7 @@ P08Knob : Knob {
     this.color_([Color.black, Color.white, Color.clear, Color.white]);
     this.action_({
       this.displayValueOnLCD;
+      //this.changed;
     });
     this.mouseDownAction_({ |view, x, y, mod, buttNum, clickCount|
       if (buttNum == 0 && (clickCount == 2)) {
