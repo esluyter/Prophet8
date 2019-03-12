@@ -89,4 +89,35 @@ P08Seq : P08ParamBank {
   init { |offset|
     steps = { |i| P08Param(offset + i) }.dup(16);
   }
+
+  at { |index|
+    ^steps[index]
+  }
+
+  put { |index, value|
+    steps[index].value = value;
+  }
+
+  value_ { |value|
+    value = value.asArray;
+    if (value.size > 16) {
+      "P08Seq: Array exceeded 16 slots, will be truncated.".warn;
+      value = value[0..15];
+    };
+    if (value.size < 16) {
+      value = value ++ [126] ++ (0.dup(16 - (value.size + 1)));
+    };
+    value.size.postln;
+    value.do { |item, index|
+      this.put(index, item);
+    };
+  }
+
+  printOn { arg stream;
+    var offset = steps[0].id;
+		this.printClassNameOn(stream);
+    stream << " ( ids: (" << offset << ".." << (offset + 15) << "), steps: [";
+    stream << this.steps.collect(_.value).join(", ");
+    stream << "] )";
+	}
 }

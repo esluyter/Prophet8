@@ -1,47 +1,44 @@
 Prophet08 {
-  var <globals, <voice;
-  var <inDevice, <outDevice, defKey;
+  var <globals, <voice, <midiController, <ids;
 
-  *new { |deviceName, portName, channel = 0, makeDef = true, loadVoice = true|
-    ^super.new.init(deviceName, portName, channel, makeDef, loadVoice);
+  *new { |deviceName, portName, channel = 0, loadVoice = true|
+    ^super.new.init(deviceName, portName, channel, loadVoice);
   }
 
-  init { |deviceName, portName, channel, makeDef, loadVoice|
+  init { |deviceName, portName, channel, loadVoice|
+    // This might not be the most elegant way of doing this...?
+    P08BasicParam.resetIds;
+
     globals = P08Globals();
     voice = P08Voice();
+
+    ids = P08BasicParam.ids;
+    P08BasicParam.resetIds;
 
     globals.channel = channel;
 
     [globals, voice].do(_.addDependant(this));
 
     if (deviceName.notNil) {
-      this.makeDevice(deviceName, portName);
-      if (makeDef) { this.makeDef };
-      if (loadVoice) { this.loadVoice };
+      midiController = P08MidiController(this, deviceName, portName, loadVoice);
     };
   }
 
-  makeDevice { |deviceName, portName|
-    outDevice = MIDIOut.newByName(deviceName, portName);
-    inDevice = MIDIIn.findPort(deviceName, portName);
-    outDevice.latency = 0;
+  at { |index|
+    ^ids[index];
   }
 
-  makeDef { |key = 'prophet'|
-    // TODO
-  }
-
-  loadVoice {
-    // TODO
+  put { |index, value|
+    ids[index].value = value;
   }
 
   channel {
-    ^globals.channel.value
+    ^globals.channel.value;
   }
 
   channel_ { |value|
     globals.channel = value;
-    this.makeDef(defKey);
+    midiController.makeDef;
   }
 
   update { |object, param|

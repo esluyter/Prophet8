@@ -1,8 +1,24 @@
-P08Param {
+P08BasicParam {
+  classvar <ids;
+
+  *initClass {
+    this.resetIds;
+  }
+
+  *resetIds {
+    ids = IdentityDictionary[ ];
+  }
+
+  init { |id|
+    ids[id] = this;
+  }
+}
+
+P08Param : P08BasicParam {
   var <id, <minValue, <maxValue, <value;
 
   *new { |id = 0, minValue = 0, maxValue = 127, value = 0|
-    ^super.newCopyArgs(id, minValue, maxValue, value.clip(minValue, maxValue));
+    ^super.newCopyArgs(id, minValue, maxValue, value.clip(minValue, maxValue)).init(id);
   }
 
   value_ { |val|
@@ -31,11 +47,11 @@ P08Param {
   }
 }
 
-P08Bool {
+P08Bool : P08BasicParam {
   var <id, <value;
 
   *new { |id = 0, value = false|
-    ^super.newCopyArgs(id, value.asBoolean);
+    ^super.newCopyArgs(id, value.asBoolean).init(id);
   }
 
   value_ { |val|
