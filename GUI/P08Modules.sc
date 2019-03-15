@@ -1,3 +1,9 @@
+/*
+TODO:
+- keyboard mode (stack/split) id
+- name id
+*/
+
 P08Insignia : UserView {
   *new { |parent, bounds|
     ^super.new(parent, bounds).init2;
@@ -93,11 +99,21 @@ P08TopPanel : P08Module {
     ]);
     P08Label(this, Rect(403, 33, 64, 20)).string_("Arp Mode");
 
-    arpOn = P08Button(this, Rect(580, 70, 15, 8));
+    arpOn = P08Button(this, Rect(578, 69, 20, 10));
     P08Label(this, Rect(557, 82, 60, 20)).string_("Arpeggiator");
 
-    gatedSeqOn = P08Button(this, Rect(580, 110, 15, 8));
+    gatedSeqOn = P08Button(this, Rect(578, 109, 20, 10));
     P08Label(this, Rect(557, 122, 60, 20)).string_("Gated Seq");
+
+    bpm.id = 91;
+    clockDivide.id = 92;
+    bendRange.id = 93;
+    seqTrig.id = 94;
+    unisonMode.id = 95;
+    unisonAssign.id = 96;
+    arpMode.id = 97;
+    arpOn.id = 100;
+    gatedSeqOn.id = 101;
   }
 }
 
@@ -124,6 +140,11 @@ P08LFOModule : P08Module {
     P08Label(this, Rect(168, 60, 35, 20)).string_("Key Sync");
 
     this.index_(index);
+    freq.id = index * 5 + 37;
+    shape.id = index * 5 + 38;
+    amt.id = index * 5 + 39;
+    dest.id = index * 5 + 40;
+    keySync.id = index * 5 + 41;
   }
 
   index_ { |value|
@@ -146,10 +167,12 @@ P08CtrlModule : P08Module {
     ["Mod Wheel", "Pressure", "Breath", "Velocity", "Foot Controller"].do { |str, i|
       P08Label(this, Rect(15, i * 44 + 15, 95, 15)).align_(\left).string_(str);
       dests[i] = P08PopUpMenu(this, Rect(15, i * 44 + 31, 95, 15))
-        .items_(modDests);
+        .items_(modDests)
+        .id_(i * 2 + 82);
       amts[i] = P08Knob(this, Rect(123, i * 44 + 8, 35, 35), str, "Amount", 127, 0, 254)
         .displayValueFunc_({ |value| value - 127 })
-        .centered_(true);
+        .centered_(true)
+        .id_(i * 2 + 81);
       P08Label(this, Rect(120, i * 44 + 38, 40, 20)).string_("Amount");
     };
   }
@@ -180,7 +203,9 @@ P08ModModule : P08Module {
       .displayValueFunc_({ |value| value - 127 });
     P08Label(this, Rect(185, 38, 40, 20)).string_("Amount");
 
-    //this.title_((index + 1).asString);
+    source.id = index * 3 + 65;
+    amt.id = index * 3 + 66;
+    dest.id = index * 3 + 67;
   }
 }
 
@@ -229,39 +254,16 @@ P08Env3Module : P08Module {
 
     release = P08Knob(this, Rect(385, 30, 40, 40), "Env 3", "Env Release");
     P08Label(this, Rect(375, 70, 60, 20)).string_("Release");
-  }
-}
 
-P08SeqModule : P08Module {
-  var tracks, <track = 0, <steps, <dest;
-
-  *new { |parent, bounds|
-    ^super.new(parent, bounds).init2;
-  }
-
-  init2 {
-    this.title_("SEQUENCER");
-
-    dest = P08PopUpMenu(this, Rect(305, 12, 95, 15)).items_(modDests);
-    P08Label(this, Rect(240, 10, 55, 20))
-      .string_("Destination")
-      .align_(\right)
-      .stringColor_(Color.hsv(0, 0, 0.5));
-
-    steps = 8.collect { |i| P08Knob(this, Rect(i * 50 + 25, 35, 40, 40)) };
-
-    steps = steps ++ 8.collect { |i| P08Knob(this, Rect(i * 50 + 25, 78, 40, 40)) };
-
-    tracks = 4.collect { |i|
-      P08Label(this, Rect(420, i * 25 + 23, 10, 20)).string_((i + 1).asString);
-      P08Button(this, Rect(440, i * 25 + 28, 15, 8)).action_({ |view|
-        tracks.do(_.value_(false));
-        view.value = true;
-        track = i;
-      });
-    };
-
-    tracks[track].value = true;
+    dest.id = 57;
+    amt.id = 58;
+    velAmt.id = 59;
+    delay.id = 60;
+    attack.id = 61;
+    decay.id = 62;
+    sustain.id = 63;
+    release.id = 64;
+    repeatOn.id = 98;
   }
 }
 
@@ -275,7 +277,7 @@ P08LayerModule : P08Module {
   init2 {
     this.showBorder_(false);
 
-    editB = P08Button(this, Rect(75, 15, 15, 8));
+    editB = P08Button(this, Rect(72, 14, 20, 10));
     P08Label(this, Rect(52, 27, 60, 20)).string_("Edit B");
 
     stack = P08Button(this, Rect(25, 15, 15, 8));
@@ -284,8 +286,61 @@ P08LayerModule : P08Module {
     split = P08Button(this, Rect(25, 65, 15, 8));
     P08Label(this, Rect(12, 82, 40, 20)).string_("A/B Split");
 
-    splitPoint = P08Knob(this, Rect(65, 52, 35, 35));
+    splitPoint = P08Knob(this, Rect(68, 54, 30, 30));
     P08Label(this, Rect(52, 85, 60, 20)).string_("Split Point");
+
+    splitPoint.id = 118;
+  }
+}
+
+P08SeqModule : P08Module {
+  var tracks, <track = 0, <steps, <dest;
+
+  *new { |parent, bounds|
+    ^super.new(parent, bounds).init2;
+  }
+
+  init2 {
+    this.title_("SEQUENCER");
+
+    dest = 4.collect { |i|
+      P08PopUpMenu(this, Rect(305, 12, 95, 15)).items_(modDests).id_(77 + i).visible_(false)
+    };
+    P08Label(this, Rect(240, 10, 55, 20))
+      .string_("Destination")
+      .align_(\right)
+      .stringColor_(Color.hsv(0, 0, 0.5));
+
+    steps = nil ! 4;
+    4.do { |j|
+      steps[j] = 8.collect { |i|
+        P08Knob(this, Rect(i * 50 + 25, 35, 40, 40))
+          .id_(j * 16 + i + 120)
+          .visible_(false);
+      };
+      steps[j] = steps[j] ++ 8.collect { |i|
+        P08Knob(this, Rect(i * 50 + 25, 78, 40, 40))
+        .id_(j * 16 + i + 128)
+        .visible_(false)
+      };
+    };
+
+    tracks = 4.collect { |i|
+      P08Label(this, Rect(420, i * 25 + 23, 10, 20)).string_((i + 1).asString);
+      P08Button(this, Rect(438, i * 25 + 26, 20, 10)).action_({ |view|
+        tracks.do(_.value_(false));
+        view.value = true;
+        track = i;
+
+        dest.do(_.visible_(false));
+        steps.do { |sequence| sequence.do(_.visible_(false)); };
+
+        dest[track].visible_(true);
+        steps[track].do(_.visible_(true));
+      });
+    };
+
+    tracks[track].valueAction = true;
   }
 }
 
@@ -383,6 +438,24 @@ P08OscModule : P08Module {
 
     keyboardOn2 = P08Button(this, Rect(295, 15, 15, 8));
     P08Label(this, Rect(282, 10, 10, 20)).string_("2");
+
+
+    freq1.id = 0;
+    fine1.id = 1;
+    shape1.id = 2;
+    glide1.id = 3;
+    keyboardOn1.id = 4;
+    freq2.id = 5;
+    fine2.id = 6;
+    shape2.id = 7;
+    glide2.id = 8;
+    keyboardOn2.id = 9;
+    sync.id = 10;
+    glideMode.id = 11;
+    slop.id = 12;
+    mix.id = 13;
+    noise.id = 14;
+    unisonOn.id = 99;
   }
 }
 
@@ -418,6 +491,19 @@ P08FilterModule : P08Module {
       P08Label(this, Rect(i * 60 + 75, 135, 60, 20)).string_(str);
       P08Knob(this, Rect(i * 60 + 85, 95, 40, 40), "Lowpass", "Env " ++ str);
     };
+
+    freq.id = 15;
+    res.id = 16;
+    keyboardAmt.id = 17;
+    mod.id = 18;
+    poles.id = 19;
+    envAmt.id = 20;
+    velAmt.id = 21;
+    delay.id = 22;
+    attack.id = 23;
+    decay.id = 24;
+    sustain.id = 25;
+    release.id = 26;
   }
 }
 
@@ -445,6 +531,17 @@ P08AmpModule : P08Module {
       P08Label(this, Rect(i * 60 + 15, 135, 60, 20)).string_(str);
       P08Knob(this, Rect(i * 60 + 25, 95, 40, 40), "VCA", "Env " ++ str);
     };
+
+    initLevel.id = 27;
+    spread.id = 28;
+    volume.id = 29;
+    envAmt.id = 30;
+    velAmt.id = 31;
+    delay.id = 32;
+    attack.id = 33;
+    decay.id = 34;
+    sustain.id = 35;
+    release.id = 36;
   }
 }
 

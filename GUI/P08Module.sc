@@ -114,4 +114,11 @@ P08Module : SCViewHolder {
       };
     };
   }
+
+  prRegisterDependant { |object|
+    this.children.do { |child|
+      child.postln;
+      child.addDependant(object);
+    };
+  }
 }

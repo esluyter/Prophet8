@@ -14,16 +14,16 @@ p.layerA.oscs.do(_.glide = 0)
 (
 k = MIDIIn.findPort("microKEY2", "KEYBOARD");
 MIDIdef.noteOn(\korgOn, { |vel, num|
-  p.outDevice.noteOn(0, num, vel);
+  p.midiController.outDevice.noteOn(0, num, vel);
 }, srcID: k.uid);
 MIDIdef.noteOff(\korgOff, { |vel, num|
-  p.outDevice.noteOff(0, num, vel);
+  p.midiController.outDevice.noteOff(0, num, vel);
 }, srcID: k.uid);
 MIDIdef.cc(\korgCC, { |val, num|
-  p.outDevice.control(0, num, val);
+  p.midiController.outDevice.control(0, num, val);
 }, srcID: k.uid);
 MIDIdef.bend(\korgBend, { |val|
-  p.outDevice.bend(0, val);
+  p.midiController.outDevice.bend(0, val);
 }, srcID: k.uid);
 )
 

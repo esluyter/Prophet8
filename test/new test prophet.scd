@@ -23,3 +23,5 @@ p.layerA.modCtrl
 
 
 c.view.oscView.noise.addDependant({ |...args| args.postcs; })
+
+c.view.ids[100].addDependant({ |...args| args.postln})

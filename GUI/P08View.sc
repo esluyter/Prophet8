@@ -24,13 +24,15 @@ P08Background : SCViewHolder {
 
 P08View : SCViewHolder {
   var <oscView, <filtView, <ampView, <env3View, <seqView, <lfoViews, <modViews,
-  <ctrlView, <lcdView, <topPanel, insignia, layerPanel;
+  <ctrlView, <lcdView, <topPanel, insignia, layerPanel, <ids;
 
   *new { |parent, bounds|
     ^super.new.init(parent, bounds);
   }
 
   init { |parent, bounds|
+    P08GUIParam.resetIds;
+
     lfoViews = nil!4; modViews = nil!4;
 
     view = P08Background(parent, bounds);
@@ -56,8 +58,16 @@ P08View : SCViewHolder {
     filtView = P08FilterModule(view, Rect(345, 360, 390, 170));
     ampView = P08AmpModule(view, Rect(730, 360, 330, 170));
 
-    ([oscView, filtView, ampView, env3View, seqView, ctrlView, topPanel] ++ lfoViews ++ modViews).do { |child|
+    ([oscView, filtView, ampView, env3View, seqView, ctrlView, topPanel, layerPanel] ++ lfoViews ++ modViews).do { |child|
       child.lcdView_(lcdView);
+      child.prRegisterDependant(this);
     };
+
+    ids = P08GUIParam.ids;
+    P08GUIParam.resetIds;
+  }
+
+  update { |guiParam|
+    this.changed(guiParam);
   }
 }

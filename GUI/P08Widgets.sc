@@ -1,3 +1,15 @@
+P08GUIParam {
+  classvar <ids;
+
+  *initClass {
+    this.resetIds;
+  }
+
+  *resetIds {
+    ids = IdentityDictionary[ ];
+  }
+}
+
 P08Knob : Knob {
   var <>spec;
   var <defaultValue;
@@ -5,6 +17,7 @@ P08Knob : Knob {
   var <>name;
   var <>lcdView;
   var <>displayValueFunc;
+  var <id;
 
   *new { |parent, bounds, section = "Section", name = "Knob", defaultValue = 0, minValue = 0, maxValue = 127|
     ^super.new(parent, bounds).init(section, name, defaultValue, minValue, maxValue);
@@ -19,7 +32,7 @@ P08Knob : Knob {
     this.color_([Color.black, Color.white, Color.clear, Color.white]);
     this.action_({
       this.displayValueOnLCD;
-      //this.changed;
+      this.changed;
     });
     this.mouseDownAction_({ |view, x, y, mod, buttNum, clickCount|
       if (buttNum == 0 && (clickCount == 2)) {
@@ -38,6 +51,11 @@ P08Knob : Knob {
     };
   }
 
+  id_ { |value|
+    id = value;
+    P08GUIParam.ids[id] = this;
+  }
+
   value_ { |val|
     super.value_(spec.unmap(val));
     this.displayValueOnLCD;
@@ -54,6 +72,8 @@ P08Knob : Knob {
 }
 
 P08PopUpMenu : PopUpMenu {
+  var <id;
+
   *new { |parent, bounds|
     ^super.new(parent, bounds).init;
   }
@@ -61,7 +81,15 @@ P08PopUpMenu : PopUpMenu {
   init {
     this.font_(Font(Font.defaultMonoFace, 9))
       .background_(Color.gray(0))
-      .stringColor_(Color.hsv(0, 0.6, 0.7));
+      .stringColor_(Color.hsv(0, 0.6, 0.7))
+      .action_({
+        this.changed;
+      });
+  }
+
+  id_ { |value|
+    id = value;
+    P08GUIParam.ids[id] = this;
   }
 }
 
@@ -77,17 +105,15 @@ P08Label : StaticText {
   }
 }
 
-P08Button : SCViewHolder {
-  var <value = false, <action;
+P08Button : UserView {
+  var <value = false, <action, <id;
 
   *new { |parent, bounds|
-    ^super.new.init(parent, bounds);
+    ^super.new(parent, bounds).init;
   }
 
   init { |parent, bounds|
-    bounds = bounds ?? Rect(0, 0, parent.bounds.width, parent.bounds.height);
-    view = UserView(parent, bounds)
-      .drawFunc_({ |view|
+    this.drawFunc_({ |view|
         Pen.addRoundedRect(Rect(0, 0, view.bounds.width, view.bounds.height), view.bounds.width / 2, view.bounds.height / 2);
         if (value) {
           Pen.fillColor = Color.hsv(0, 0.8, 1);
@@ -102,8 +128,14 @@ P08Button : SCViewHolder {
       .mouseDownAction_({ |view|
         value = value.not;
         action.(this);
-        this.refresh
+        this.changed;
+        this.refresh;
       });
+  }
+
+  id_ { |value|
+    id = value;
+    P08GUIParam.ids[id] = this;
   }
 
   value_ { |val|
@@ -112,6 +144,12 @@ P08Button : SCViewHolder {
       value = val != 0;
     };
     this.refresh;
+  }
+
+  valueAction_ { |value|
+    this.value_(value);
+    action.(this);
+    this.changed;
   }
 
   action_ { |value|
