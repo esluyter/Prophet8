@@ -47,4 +47,6 @@ Prophet08 {
 
   layerA { ^voice.layerA }
   layerB { ^voice.layerB }
+
+  gui { ^P08GUIController(this) }
 }
