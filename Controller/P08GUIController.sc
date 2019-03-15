@@ -2,7 +2,7 @@ P08GUIController {
   var <model, <window, <view;
 
   *new { |model, bounds = (Rect(0, 0, 1080, 530))|
-    ^super.new.initModel(model).makeWindow(bounds).refreshView;
+    ^super.new.initModel(model).makeWindow(bounds).refreshViewDefaults;
   }
 
   initModel { |argModel|
@@ -20,7 +20,13 @@ P08GUIController {
 
   refreshView {
     model.ids.do { |param|
-      this.update(model, param);
+      this.prUpdateView(param);
+    };
+  }
+
+  refreshViewDefaults {
+    model.ids.do { |param|
+      this.prUpdateView(param, true);
     };
   }
 
@@ -36,11 +42,15 @@ P08GUIController {
     };
   }
 
-  prUpdateView { |param|
+  prUpdateView { |param, default = false|
     var guiParam = view.ids[param.id];
     if (guiParam.notNil) {
-      if (guiParam.value != param.midiValue) {
-        guiParam.value = param.midiValue;
+      if (default) {
+        guiParam.defaultValue = param.midiValue;
+      } {
+        if (guiParam.value != param.midiValue) {
+          guiParam.value = param.midiValue;
+        };
       };
     };
   }

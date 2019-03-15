@@ -29,7 +29,7 @@ P08Knob : Knob {
     spec = ControlSpec(minValue, maxValue, 'linear', 0.0, 0, "");
     displayValueFunc = { |value| value };
     this.defaultValue_(argDefaultValue);
-    this.color_([Color.black, Color.white, Color.clear, Color.white]);
+    this.color_([Color.black, Color.gray(0.8), Color.clear, Color.gray(1)]);
     this.action_({
       this.displayValueOnLCD;
       this.changed;
@@ -91,6 +91,10 @@ P08PopUpMenu : PopUpMenu {
     id = value;
     P08GUIParam.ids[id] = this;
   }
+
+  defaultValue_ { |value|
+    this.value_(value);
+  }
 }
 
 P08Label : StaticText {
@@ -144,6 +148,10 @@ P08Button : UserView {
       value = val != 0;
     };
     this.refresh;
+  }
+
+  defaultValue_ { |value|
+    this.value_(value);
   }
 
   valueAction_ { |value|

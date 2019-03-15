@@ -136,7 +136,7 @@ P08LFOModule : P08Module {
     shape = P08PopUpMenu(this, Rect(115, 40, 50, 15))
       .items_(["Tri", "Rev Saw", "Saw", "Square", "Random"]);
     P08Label(this, Rect(110, 60, 60, 20)).string_("Shape");
-    keySync = P08Button(this, Rect(178, 45, 15, 8));
+    keySync = P08Button(this, Rect(176, 44, 19, 9));
     P08Label(this, Rect(168, 60, 35, 20)).string_("Key Sync");
 
     this.index_(index);
@@ -280,10 +280,10 @@ P08LayerModule : P08Module {
     editB = P08Button(this, Rect(72, 14, 20, 10));
     P08Label(this, Rect(52, 27, 60, 20)).string_("Edit B");
 
-    stack = P08Button(this, Rect(25, 15, 15, 8));
+    stack = P08Button(this, Rect(23, 14, 20, 10));
     P08Label(this, Rect(12, 33, 40, 20)).string_("A/B Stack");
 
-    split = P08Button(this, Rect(25, 65, 15, 8));
+    split = P08Button(this, Rect(23, 64, 20, 10));
     P08Label(this, Rect(12, 82, 40, 20)).string_("A/B Split");
 
     splitPoint = P08Knob(this, Rect(68, 54, 30, 30));
@@ -410,22 +410,22 @@ P08OscModule : P08Module {
     mix.section_("Osc").name_("Mix").defaultValue_(64);
     noise.section_("Noise").name_("Amount");
 
-    sync = P08Button(this, Rect(45, 98, 15, 8));
-    P08Label(this, Rect(35, 108, 35, 20)).string_("Sync");
+    sync = P08Button(this, Rect(43, 95, 20, 10));
+    P08Label(this, Rect(35, 106, 35, 20)).string_("Sync");
 
-    glideMode = P08PopUpMenu(this, Rect(80, 94, 115, 15)).items_([
+    glideMode = P08PopUpMenu(this, Rect(80, 93, 115, 15)).items_([
       "Fixed rate",
       "Fixed rate auto",
       "Fixed time",
       "Fixed time auto"
     ]);
-    P08Label(this, Rect(110, 108, 55, 20)).string_("Glide Mode");
+    P08Label(this, Rect(110, 107, 55, 20)).string_("Glide Mode");
 
-    slop = P08PopUpMenu(this, Rect(207, 94, 35, 15)).items_(["0", "1", "2", "3", "4"]);
-    P08Label(this, Rect(207, 108, 35, 20)).string_("Slop");
+    slop = P08PopUpMenu(this, Rect(207, 93, 35, 15)).items_(["0", "1", "2", "3", "4"]);
+    P08Label(this, Rect(207, 107, 35, 20)).string_("Slop");
 
-    unisonOn = P08Button(this, Rect(265, 98, 15, 8));
-    P08Label(this, Rect(255, 108, 35, 20)).string_("Unison");
+    unisonOn = P08Button(this, Rect(263, 95, 20, 10));
+    P08Label(this, Rect(255, 106, 35, 20)).string_("Unison");
 
 
     P08Label(this, Rect(175, 10, 100, 20))

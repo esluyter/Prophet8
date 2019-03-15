@@ -5,7 +5,7 @@ p[5] = 0
 
 
 p.midiController
-
+p.layerA.arpMode
 p.layerA.osc1.freq = 90
 p.layerA.osc2.fine = 15
 p.layerA.osc1.keyboardOn = false
@@ -25,3 +25,6 @@ p.layerA.modCtrl
 c.view.oscView.noise.addDependant({ |...args| args.postcs; })
 
 c.view.ids[100].addDependant({ |...args| args.postln})
+
+p.layerA.seq1Dest = 8
+p.layerA.seq2Dest = 4
