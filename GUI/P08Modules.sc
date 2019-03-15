@@ -60,10 +60,10 @@ P08TopPanel : P08Module {
     ]);
     P08Label(this, Rect(477, 113, 60, 20)).string_("Clock Divide");
 
-    bendRange = P08PopUpMenu(this, Rect(33, 8, 40, 20)).items_((0..12));
+    bendRange = P08PopUpMenu(this, Rect(33, 8, 40, 20), "PW Range", "Semitones").items_((0..12));
     P08Label(this, Rect(18, 33, 70, 20)).string_("Bend Range");
 
-    unisonMode = P08PopUpMenu(this, Rect(98, 8, 80, 20)).items_([
+    unisonMode = P08PopUpMenu(this, Rect(98, 8, 80, 20), "Unison", "Mode").items_([
       "One Voice",
       "All Voices",
       "AllDetune1",
@@ -72,17 +72,17 @@ P08TopPanel : P08Module {
     ]);
     P08Label(this, Rect(103, 33, 70, 20)).string_("Unison Mode");
 
-    unisonAssign = P08PopUpMenu(this, Rect(203, 8, 64, 20)).items_([
-      "Low",
+    unisonAssign = P08PopUpMenu(this, Rect(203, 8, 64, 20), "Unison", "Assign").items_([
+      "Low Note",
       "Low Retrig",
-      "High",
-      "High Retrig",
-      "Last",
-      "Last Retrig"
+      "High Note",
+      "HighRetrig",
+      "Last Note",
+      "LastRetrig"
     ]);
     P08Label(this, Rect(193, 33, 84, 20)).string_("Unison Assign");
 
-    seqTrig = P08PopUpMenu(this, Rect(293, 8, 84, 20)).items_([
+    seqTrig = P08PopUpMenu(this, Rect(293, 8, 84, 20), "Sequence", "Trigger").items_([
       "Normal",
       "Normal No Reset",
       "No Gate",
@@ -91,7 +91,7 @@ P08TopPanel : P08Module {
     ]);
     P08Label(this, Rect(293, 33, 84, 20)).string_("Seq Trigger");
 
-    arpMode = P08PopUpMenu(this, Rect(403, 8, 64, 20)).items_([
+    arpMode = P08PopUpMenu(this, Rect(403, 8, 64, 20), "Arpeg", "Mode").items_([
       "Up",
       "Down",
       "Up/Down",
@@ -127,13 +127,20 @@ P08LFOModule : P08Module {
   init2 { |index|
     P08Label(this, Rect(45, 10, 60, 20)).string_("Dest")
       .stringColor_(Color.hsv(0, 0, 0.5));
-    dest = P08PopUpMenu(this, Rect(90, 12, 95, 15)).items_(modDests);
+    dest = P08PopUpMenu(this, Rect(90, 12, 95, 15), "LFO " ++ (index + 1), "Dest").items_(modDests);
 
-    freq = P08Knob(this, Rect(20, 30, 35, 35), "LFO", "Frequency", 0, 0, 166);
+    freq = P08Knob(this, Rect(20, 30, 35, 35), "LFO", "Freqncy", 0, 0, 166)
+      .displayValueFunc_({ |value|
+        if (value <= 150) {
+          value
+        }  {
+          ["32 steps", "16 steps", "8 steps", "6 steps", "4 steps", "3 steps", "2 steps", "1.5 step", "1 step", "2/3 step", "1/2 step", "1/3 step", "1/4 step", "1/6 step", "1/8 step", "1/16step"].at(value - 151);
+        };
+      });
     P08Label(this, Rect(8, 60, 60, 20)).string_("Frequency");
     amt = P08Knob(this, Rect(70, 30, 35, 35), "LFO", "Amount");
     P08Label(this, Rect(58, 60, 60, 20)).string_("Amount");
-    shape = P08PopUpMenu(this, Rect(115, 40, 50, 15))
+    shape = P08PopUpMenu(this, Rect(115, 40, 50, 15), "LFO " ++ (index + 1), "Shape")
       .items_(["Tri", "Rev Saw", "Saw", "Square", "Random"]);
     P08Label(this, Rect(110, 60, 60, 20)).string_("Shape");
     keySync = P08Button(this, Rect(176, 44, 19, 9));
@@ -166,7 +173,7 @@ P08CtrlModule : P08Module {
     amts = nil!5;
     ["Mod Wheel", "Pressure", "Breath", "Velocity", "Foot Controller"].do { |str, i|
       P08Label(this, Rect(15, i * 44 + 15, 95, 15)).align_(\left).string_(str);
-      dests[i] = P08PopUpMenu(this, Rect(15, i * 44 + 31, 95, 15))
+      dests[i] = P08PopUpMenu(this, Rect(15, i * 44 + 31, 95, 15), name: "Dest")
         .items_(modDests)
         .id_(i * 2 + 82);
       amts[i] = P08Knob(this, Rect(123, i * 44 + 8, 35, 35), str, "Amount", 127, 0, 254)
@@ -175,6 +182,12 @@ P08CtrlModule : P08Module {
         .id_(i * 2 + 81);
       P08Label(this, Rect(120, i * 44 + 38, 40, 20)).string_("Amount");
     };
+    dests[0].section = "ModWhl";
+    dests[1].section = "Press";
+    dests[2].section = "Breath";
+    dests[3].section = "Veloc";
+    dests[4].section = "Foot";
+    amts[4].section = "Foot";
   }
 }
 
@@ -186,13 +199,13 @@ P08ModModule : P08Module {
   }
 
   init2 { |index|
-    source = P08PopUpMenu(this, Rect(80, 12, 95, 15)).items_(modSrcs);
+    source = P08PopUpMenu(this, Rect(80, 12, 95, 15), "Mod " ++ (index + 1), "Source").items_(modSrcs);
     P08Label(this, Rect(15, 10, 55, 20))
       .string_("Source")
       .align_(\right)
       .stringColor_(Color.hsv(0, 0, 0.5));
 
-    dest = P08PopUpMenu(this, Rect(80, 35, 95, 15)).items_(modDests);
+    dest = P08PopUpMenu(this, Rect(80, 35, 95, 15), "Mod " ++ (index + 1), "Dest").items_(modDests);
     P08Label(this, Rect(15, 33, 55, 20))
       .string_("Destination")
       .align_(\right)
@@ -313,15 +326,30 @@ P08SeqModule : P08Module {
 
     steps = nil ! 4;
     4.do { |j|
+      var maxValue = if (j == 0) { 127 } { 126 };
       steps[j] = 8.collect { |i|
-        P08Knob(this, Rect(i * 50 + 25, 35, 40, 40))
+        P08Knob(this, Rect(i * 50 + 25, 35, 40, 40), "Seq " ++ (j + 1), "Step " ++ (i + 1), maxValue: maxValue)
           .id_(j * 16 + i + 120)
-          .visible_(false);
+          .visible_(false)
+          .displayValueFunc_({ |value|
+            if (value <= 125) {
+              value
+            }  {
+              ["Reset", "Rest"].at(value - 126);
+            };
+          });
       };
       steps[j] = steps[j] ++ 8.collect { |i|
-        P08Knob(this, Rect(i * 50 + 25, 78, 40, 40))
+        P08Knob(this, Rect(i * 50 + 25, 78, 40, 40), "Seq " ++ (j + 1), "Step " ++ (i + 9), maxValue: maxValue)
         .id_(j * 16 + i + 128)
         .visible_(false)
+        .displayValueFunc_({ |value|
+          if (value <= 125) {
+            value
+          }  {
+            ["Reset", "Rest"].at(value - 126);
+          };
+        });
       };
     };
 

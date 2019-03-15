@@ -55,7 +55,12 @@ P08MidiController {
     var paramNum, paramVal;
     paramNum = nrpn[0] * 128 + nrpn[1];
     paramVal = nrpn[2] * 128 + nrpn[3];
-    model.ids[paramNum].midiValue = paramVal;
+    if (model.ids[paramNum].notNil) {
+      model.ids[paramNum].midiValue = paramVal;
+    } {
+      "Whoa now, got some NRPN with no idea what to do with it: ".post;
+      [paramNum, paramVal].postln;
+    }
   }
 
   update { |object, param|

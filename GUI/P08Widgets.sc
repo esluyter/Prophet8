@@ -72,19 +72,36 @@ P08Knob : Knob {
 }
 
 P08PopUpMenu : PopUpMenu {
+  var <defaultValue = 0;
+  var <>section;
+  var <>name;
+  var <>lcdView;
   var <id;
 
-  *new { |parent, bounds|
-    ^super.new(parent, bounds).init;
+  *new { |parent, bounds, section = "Section", name = "Menu"|
+    ^super.new(parent, bounds).init(section, name);
   }
 
-  init {
+  init { |argSection, argName|
+    section = argSection;
+    name = argName;
+
     this.font_(Font(Font.defaultMonoFace, 9))
       .background_(Color.gray(0))
       .stringColor_(Color.hsv(0, 0.6, 0.7))
       .action_({
+        this.displayValueOnLCD;
         this.changed;
       });
+  }
+
+  displayValueOnLCD {
+    if (lcdView.notNil) {
+      lcdView.showValue(
+        section, name,
+        this.items[this.defaultValue], this.items[this.value]
+      );
+    };
   }
 
   id_ { |value|
@@ -92,8 +109,14 @@ P08PopUpMenu : PopUpMenu {
     P08GUIParam.ids[id] = this;
   }
 
+  value_ { |val|
+    super.value_(val);
+    this.displayValueOnLCD;
+  }
+
   defaultValue_ { |value|
     this.value_(value);
+    defaultValue = value;
   }
 }
 
