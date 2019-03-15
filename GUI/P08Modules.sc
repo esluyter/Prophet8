@@ -484,7 +484,7 @@ P08FilterModule : P08Module {
       .displayValueFunc_({ |value| value - 127 })
       .centered_(true);
 
-    poles = P08Button(this, Rect(35, 114, 15, 8));
+    poles = P08Button(this, Rect(33, 113, 20, 10));
     P08Label(this, Rect(25, 124, 35, 20)).string_("4 Pole");
 
     # delay, attack, decay, sustain, release = ["Delay", "Attack", "Decay", "Sustain", "Release"].collect { |str, i|
