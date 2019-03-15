@@ -1,21 +1,25 @@
 P08GUIController {
-  var <model, <window, <view;
+  var <model, <bounds, <window, <view;
 
   *new { |model, bounds = (Rect(0, 0, 1080, 530))|
-    ^super.new.initModel(model).makeWindow(bounds).refreshViewDefaults;
+    ^super.new.init(model, bounds).makeWindow.refreshViewDefaults;
   }
 
-  initModel { |argModel|
+  init { |argModel, argBounds|
     model = argModel;
-    model.addDependant(this);
+    bounds = argBounds;
   }
 
-  makeWindow { |bounds|
-    if (window.notNil) { window.close };
+  makeWindow {
+    if (window.notNil) { window.onClose = nil; window.close };
+
     window = Window("Prophet '08", bounds.resizeBy(60, 0)).front
-      .background_(Color.hsv(0.05, 0.9, 0.5));
+      .background_(Color.hsv(0.05, 0.9, 0.5))
+      .onClose_({ model.removeDependant(this) });
     view = P08View(window, bounds.moveBy(30, 0));
+
     view.addDependant(this);
+    model.addDependant(this);
   }
 
   refreshView {
@@ -28,6 +32,10 @@ P08GUIController {
     model.ids.do { |param|
       this.prUpdateView(param, true);
     };
+  }
+
+  close {
+    window.close;
   }
 
   update { |object, param|

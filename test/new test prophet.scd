@@ -1,4 +1,9 @@
-p = Prophet08("Keyboard Uno", "USB Uno MIDI Interface"); c = P08GUIController(p)
+p = Prophet08("Keyboard Uno", "USB Uno MIDI Interface"); c = p.gui;
+
+c.view.remove
+
+p.removeDependant(c)
+p.dependants
 
 p[5]
 p[5] = 0
@@ -28,3 +33,5 @@ c.view.ids[100].addDependant({ |...args| args.postln})
 
 p.layerA.seq1Dest = 8
 p.layerA.seq2Dest = 4
+
+c.view.ctrlView.amts[4].defaultValue = 0
