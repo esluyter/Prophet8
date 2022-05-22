@@ -21,9 +21,12 @@ P08Param : P08BasicParam {
     ^super.newCopyArgs(id, minValue, maxValue, value.clip(minValue, maxValue)).init(id);
   }
 
-  value_ { |val|
+  value_ { |val, update = true|
     value = val.clip(minValue, maxValue);
-    this.changed(this);
+    if (update) {
+      "update".postln;
+      this.changed(this);
+    };
   }
 
   midiValue {
@@ -36,9 +39,9 @@ P08Param : P08BasicParam {
 
   midiValue_ { |val|
     if (minValue < 0) {
-      this.value_(val + minValue);
+      this.value_(val + minValue, false);
     } {
-      this.value_(val);
+      this.value_(val, false);
     };
   }
 
@@ -54,9 +57,11 @@ P08Bool : P08BasicParam {
     ^super.newCopyArgs(id, value.asBoolean).init(id);
   }
 
-  value_ { |val|
+  value_ { |val, update = true|
     value = val.asBoolean;
-    this.changed(this);
+    if (update) {
+      this.changed(this);
+    };
   }
 
   midiValue {
@@ -64,7 +69,7 @@ P08Bool : P08BasicParam {
   }
 
   midiValue_ { |val|
-    this.value_(val);
+    this.value_(val, false);
   }
 
   printOn { | stream |

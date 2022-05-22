@@ -1,5 +1,5 @@
 P08MidiController {
-  var <inDevice, <outDevice, midiFunc;
+  var <inDevice, <outDevice, midiFunc, <>midiOn = true;
   var model;
 
   *new { |model, deviceName, portName, loadVoice|
@@ -18,7 +18,7 @@ P08MidiController {
       inDevice = MIDIIn.findPort(deviceName, portName);
       outDevice.latency = 0;
     } {
-      ^nil;
+      ^this;
     };
 
     this.makeDef;
@@ -64,7 +64,9 @@ P08MidiController {
   }
 
   update { |object, param|
-    this.prSendNRPN(param);
+    if (midiOn) {
+      this.prSendNRPN(param);
+    };
   }
 
   prSendNRPN { |param|
@@ -81,5 +83,44 @@ P08MidiController {
 
   loadVoice {
     // TODO
+  }
+
+  prRequestProgramEditBuffer {
+    outDevice.sysex(Int8Array[0xF0, 0x01, 0x23, 0x06, 0xF7]);
+  }
+
+  prReceiveSysex { |data|
+    if (data[0..3] == Int8Array[0xF0, 0x01, 0x23, 0x03]) {
+      // Program Edit Buffer Data Dump
+      data = this.prUnpackProgramData(data[4..(data.size - 2)]);
+      this.prReceiveProgramEditBuffer(data);
+    };
+  }
+
+  prUnpackProgramData { |data|
+    if (data.size != 439) { "Wrong data size".error };
+    data = data.collect(_.asBinaryDigits).clump(8).collect { |packet|
+      var msBits = packet[0];
+      if (msBits[0] != 0) { "Received bad sysex".error };
+      packet = packet[1..].collect { |bits, i|
+        if (bits[0] != 0) { "Received bad sysex".error };
+        bits[0] = msBits[7 - i];
+        bits.convertDigits(2);
+      };
+    };
+    ^data.flat;
+  }
+
+  prReceiveProgramEditBuffer { |data|
+    midiOn = false;
+    data.do { |value, num|
+      var param = model[num];
+      //[param, num, value].postln;
+      if (param.notNil) {
+        //[param, param.midiValue, value].postln;
+        param.midiValue = value;
+      };
+    };
+    midiOn = true;
   }
 }

@@ -449,7 +449,7 @@ P08OscModule : P08Module {
     ]);
     P08Label(this, Rect(110, 107, 55, 20)).string_("Glide Mode");
 
-    slop = P08PopUpMenu(this, Rect(207, 93, 35, 15)).items_(["0", "1", "2", "3", "4"]);
+    slop = P08PopUpMenu(this, Rect(207, 93, 35, 15)).items_(["0", "1", "2", "3", "4", "5"]);
     P08Label(this, Rect(207, 107, 35, 20)).string_("Slop");
 
     unisonOn = P08Button(this, Rect(263, 95, 20, 10));
